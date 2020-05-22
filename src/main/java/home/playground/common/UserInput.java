@@ -1,6 +1,9 @@
 package home.playground.common;
 
 import home.playground.first.Operation;
+import home.playground.third.TreeInput;
+import home.playground.third.TreeOperation;
+
 import java.util.Scanner;
 
 public class UserInput {
@@ -13,6 +16,8 @@ public class UserInput {
 
     private static final String ENTER_STRING_MSG = "Please enter a string that is at least 2 character long:";
     private static final String INVALID_STRING_ERR_MSG_TEMPLATE = "Sorry, '%s' is not a valid string, please try again:";
+
+    private static final String INVALID_TREE_OPERATION_MSG_TEMPLATE = "Operation '%s' isn't recognized, please enter ADD X, ASCENDING, DESCENDING, CONTAINS X, SIZE or END";
 
     private static final int MAX_INVALID_ATTEMPTS = 10;
     private static final String INVALID_ATTEMPTS_REACHED_ERR_MSG = "Invalid attempts reached";
@@ -45,6 +50,28 @@ public class UserInput {
             }
         }
         throw new RuntimeException(INVALID_ATTEMPTS_REACHED_ERR_MSG);
+    }
+
+    public static TreeInput acceptTreeInput() {
+        Scanner scanner = new Scanner(System.in);
+        for(int i = 0; i < MAX_INVALID_ATTEMPTS; i++) {
+            String line = scanner.nextLine().trim();
+            try{
+                String[] treeInputArray = line.split(" ");
+                if(treeInputArray.length == 1) {
+                    TreeOperation treeOperation = TreeOperation.fromString(treeInputArray[0]);
+                    return new TreeInput(treeOperation);
+                } else if(treeInputArray.length == 2) {
+                    TreeOperation treeOperation = TreeOperation.fromString(treeInputArray[0]);
+                    int n = Integer.parseInt(treeInputArray[1]);
+                    return new TreeInput(treeOperation, n);
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(String.format(INVALID_TREE_OPERATION_MSG_TEMPLATE, line, TreeOperation.all()));
+            }
+        }
+        throw new RuntimeException(INVALID_ATTEMPTS_REACHED_ERR_MSG);
+
     }
 
     public static String acceptString(int minLength) {

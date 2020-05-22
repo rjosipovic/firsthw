@@ -17,7 +17,7 @@ public enum Operation {
             case "primes":
                 return PRIMES;
             default:
-                throw new IllegalArgumentException(String.format("Unknown operation", value));
+                throw new IllegalArgumentException();
         }
     }
 

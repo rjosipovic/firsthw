@@ -2,6 +2,8 @@ package home.playground.third;
 
 import home.playground.common.UserInput;
 
+import java.util.Arrays;
+
 public class ThirdMain {
 
     private static BinaryTree tree = new BinaryTree();
@@ -9,7 +11,7 @@ public class ThirdMain {
     public static void main(String[] args) {
         initTree(args);
         printTree();
-        System.out.println("What would you liek to do?");
+        System.out.println("What would you like to do?");
         TreeInput input;
         do {
             input = UserInput.acceptTreeInput();
@@ -36,10 +38,10 @@ public class ThirdMain {
                 }
                 break;
             case ASCENDING:
-                System.out.println(String.format("The order of the tree ascending is: %s", tree.asc()));
+                System.out.println(String.format("The order of the tree ascending is: %s", Arrays.toString(tree.asc())));
                 break;
             case DESCENDING:
-                System.out.println(String.format("The order of the tree descending is: %s", tree.desc()));
+                System.out.println(String.format("The order of the tree descending is: %s", Arrays.toString(tree.desc())));
                 break;
             case SIZE:
                 System.out.println(String.format("Size of the tree is %d", tree.size()));
@@ -48,7 +50,7 @@ public class ThirdMain {
     }
 
     private static void printTree() {
-        System.out.println(String.format("The current tree is: %s", tree.asc()));
+        System.out.println(String.format("The current tree is: %s", Arrays.toString(tree.asc())));
     }
 
     private static void initTree(String[] args) {

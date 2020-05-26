@@ -8,104 +8,121 @@ public class BinaryTree {
 
     private Node root;
     private int size;
+    private int[] treeArray;
+    private int index;
 
     public BinaryTree() {
         this.root = null;
         this.size = 0;
-    }
-
-    public void add(int n) {
-        Node newNode = new Node(n);
-        if(root == null) {
-            root = newNode;
-            size++;
-        } else {
-            addNumber(root, newNode);
-        }
-    }
-
-    private void addNumber(Node node, Node newNode) {
-        if(newNode.getValue() < node.getValue()) {
-            if(node.getLeft() == null) {
-                node.setLeft(newNode);
-                size++;
-            } else {
-                addNumber(node.getLeft(), newNode);
-            }
-        } else if(newNode.getValue() > node.getValue()) {
-            if(node.getRight() == null) {
-                node.setRight(newNode);
-                size++;
-            } else {
-                addNumber(node.getRight(), newNode);
-            }
-        }
+        this.index = 0;
     }
 
     public int size() {
         return size;
     }
 
-    public boolean contains(int n) {
-        return get(root, n) != null;
+    public void add(int number) {
+        root = addNode(root, number);
     }
 
-    private Node get(Node node, int number) {
+    private Node addNode(Node node, int number) {
+        if(node == null) {
+            node = new Node(number);
+            size++;
+        }
+        if(number < node.getValue()) {
+            node.setLeft(addNode(node.getLeft(), number));
+        } else if(number > node.getValue()) {
+            node.setRight(addNode(node.getRight(), number));
+        }
+        return node;
+    }
 
+    public void remove(int number) {
+        root = removeNode(root, number);
+    }
+
+    private Node removeNode(Node node, int number) {
         if(node == null) {
             return null;
+        }
+        if(number < node.getValue()) {
+            node.setLeft(removeNode(node.getLeft(), number));
+        } else if(number > node.getValue()) {
+            node.setRight(removeNode(node.getRight(), number));
         } else {
-            if(number == node.getValue()) {
-                return node;
-            } else if(number < node.getValue()) {
-                return get(node.getLeft(), number);
+            if(node.getLeft() == null && node.getRight() == null) {
+                node = null;
+                size--;
+            } else if(node.getLeft() == null) {
+                node = node.getRight();
+                size--;
+            } else if(node.getRight() == null) {
+                node = node.getLeft();
+                size--;
             } else {
-                return get(node.getRight(), number);
+                Node minNode = locateMin(node.getRight());
+                node.setValue(minNode.getValue());
+                node.setRight(removeNode(node.getRight(), minNode.getValue()));
             }
         }
+        return node;
     }
 
-    public String asc() {
-        StringJoiner joiner = new StringJoiner(" ");
-        treeAscArray(root, joiner);
-        return joiner.toString();
+    private Node locateMin(Node node) {
+        if(node.getLeft() == null) {
+            return node;
+        } else {
+            return locateMin(node.getLeft());
+        }
     }
 
-    public String desc() {
-        StringJoiner joiner = new StringJoiner(" ");
-        treeDscArray(root, joiner);
-        return joiner.toString();
+    public boolean contains(int number) {
+        return hasNode(root, number);
     }
 
-    private void treeAscArray(Node node, StringJoiner joiner) {
+    private boolean hasNode(Node node, int number) {
+        if(node == null) {
+            return Boolean.FALSE;
+        }
+        if(number < node.getValue()) {
+            return hasNode(node.getLeft(), number);
+        } else if(number > node.getValue()) {
+            return hasNode(node.getRight(), number);
+        } else {
+            return Boolean.TRUE;
+        }
+    }
+
+    public int[] asc() {
+        this.treeArray = new int[this.size()];
+        this.index = 0;
+        populateTreeAsc(root);
+        return this.treeArray;
+    }
+
+    private void populateTreeAsc(Node node) {
         if(node == null) {
             return;
         }
-
-        if(node.getLeft() != null) {
-            treeAscArray(node.getLeft(), joiner);
-        }
-
-        joiner.add(Integer.toString(node.getValue()));
-
-        if(node.getRight() != null) {
-            treeAscArray(node.getRight(), joiner);
-        }
+        populateTreeAsc(node.getLeft());
+        this.treeArray[this.index++] = node.getValue();
+        populateTreeAsc(node.getRight());
     }
 
-    private void treeDscArray(Node node, StringJoiner joiner) {
+    public int[] desc() {
+        this.treeArray = new int[this.size()];
+        this.index = 0;
+        populateTreeDesc(root);
+        return this.treeArray;
+    }
+
+    private void populateTreeDesc(Node node) {
         if(node == null) {
             return;
         }
-
-        if(node.getRight() != null) {
-            treeDscArray(node.getRight(), joiner);
-        }
-
-        joiner.add(Integer.toString(node.getValue()));
-
-        if(node.getLeft() != null) {
-            treeDscArray(node.getLeft(), joiner);
-        }
+        populateTreeDesc(node.getRight());
+        this.treeArray[this.index++] = node.getValue();
+        populateTreeDesc(node.getLeft());
     }
 }
